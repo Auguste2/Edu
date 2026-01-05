@@ -6,54 +6,43 @@ export default function Navbar() {
   const navigate = useNavigate();
   const { loading, user, signOut } = useAuth();
 
-  const handleLogout = () => {
-    // ✅ INSTANT redirect (unmounts dashboard immediately)
+  const handleLogout = async () => {
+    await signOut();
     navigate("/login", { replace: true });
-
-    // ✅ Logout in background (no await, no delay)
-    signOut();
   };
 
-  // ✅ While auth is loading, always show public navbar (never block UI)
+  const Brand = () => (
+    <NavLink to="/" className="top-navbar__brand">
+      <img
+        src="/savedu-logo.png"
+        alt="SAVEDU"
+        className="top-navbar__logo"
+      />
+    </NavLink>
+  );
+
   if (loading) {
     return (
       <nav className="top-navbar">
         <div className="top-navbar__inner">
-          <NavLink to="/" className="top-navbar__brand">
-            SAVEDU
-          </NavLink>
-
-          <div className="top-navbar__links">
-            <NavLink to="/" className="top-navbar__link">ACCUEIL</NavLink>
-            <NavLink to="/" className="top-navbar__link">SERVICES</NavLink>
-            <NavLink to="/contact" className="top-navbar__link">CONTACT</NavLink>
-            <NavLink to="/signup" className="top-navbar__btn">INSCRIPTION</NavLink>
-            <NavLink to="/login" className="top-navbar__btn">CONNEXION</NavLink>
-          </div>
+          <Brand />
         </div>
       </nav>
     );
   }
 
-  // ✅ Logged in navbar
   if (user) {
     return (
       <nav className="top-navbar">
         <div className="top-navbar__inner">
-          <NavLink to="/" className="top-navbar__brand">
-            SAVEDU
-          </NavLink>
+          <Brand />
 
           <div className="top-navbar__links">
             <NavLink to="/dashboard" className="top-navbar__btn">
               DASHBOARD
             </NavLink>
 
-            <button
-              type="button"
-              className="top-navbar__btn"
-              onClick={handleLogout}
-            >
+            <button className="top-navbar__btn" onClick={handleLogout}>
               LOGOUT
             </button>
           </div>
@@ -62,13 +51,10 @@ export default function Navbar() {
     );
   }
 
-  // ✅ Logged out navbar
   return (
     <nav className="top-navbar">
       <div className="top-navbar__inner">
-        <NavLink to="/" className="top-navbar__brand">
-          SAVEDU
-        </NavLink>
+        <Brand />
 
         <div className="top-navbar__links">
           <NavLink to="/" className="top-navbar__link">ACCUEIL</NavLink>
